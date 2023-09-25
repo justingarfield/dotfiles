@@ -9,11 +9,7 @@ Contains scripts that follow along with the current state of the Windows 11 Sett
 
 ## Night Light breakdown
 
-A special thanks to [Ben N on StackOverflow](https://superuser.com/a/1209192) for posting the basis for getting this working in Windows 11 Pro 22H2.
-
-The Microsoft Windows Team should go jump into oncoming traffic for creating this fantastic cluster-f**k.
-
-Anyway...
+A special thanks to [Ben N on StackOverflow](https://superuser.com/a/1209192) for posting the basis for getting this working in Windows 10 21H2.
 
 ### Registry Keys
 
@@ -24,12 +20,12 @@ There are two registry values for dealing with the Night light settings in Windo
 
 ### Binary Value breakdown
 
-In order to understand WTF is even remotely going on with the values being saved, we need to break this all out.
+In order to understand what is even remotely going on with the values being saved, we need to break this all out.
 
 When you save your first settings for the Night light, you'll find that the registry values look something like:
 `43,42,01,00,0a,02,01,00,2a,06,ae,eb,c2,a8,06,2a,2b,0e,23,43,42,01,00,02,01,ca,14,0e,04,00,ca,1e,0e,10,00,cf,28,d0,26,ca,32,0e,12,2e,2a,00,ca,3c,0e,06,2e,24,00,00,00,00,00`.
 
-Good times, right? So easy to deciper...LOL! Let's break this shit down...
+Good times, right? So easy to deciper...LOL! Let's break this down...
 
 | What? | Example | Description |
 |-|-|-|
