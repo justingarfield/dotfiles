@@ -10,9 +10,6 @@ $systemWideParameters = @{
     # Accessibility
     SPI_SETCURSORS = 0x0057
 
-    # Icon
-    SPI_SETICONS = 0x0058
-
     # Input
     SPI_SETCONTACTVISUALIZATION = 0x2019
     SPI_SETGESTUREVISUALIZATION = 0x201B

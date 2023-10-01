@@ -2,9 +2,11 @@
 
 My personal dotfiles.
 
-## TODO List
+## Status
 
-* Add hardcore error trapping around WSL install due to UAC toggling
+Working heavily on Windows 11 provisioning process...It's not ready yet, so hold-fast while I get it finished.
+
+Things like the Night Light and Mouse Pointer Style / Size are a super PITA to toggle correctly, so it's taking a few.
 
 ## References and Inspiration
 
