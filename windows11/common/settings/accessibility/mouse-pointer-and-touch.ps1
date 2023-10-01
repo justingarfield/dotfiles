@@ -1,3 +1,12 @@
-. ../../../MousePointerStyle.ps1
+# Settings -> Accessibility -> Mouse pointer and touch
 
-Set-MousePointerStyle $MousePointerStyles.White
+. ../../../MousePointerAndTouch.ps1
+
+## Mouse pointer style
+Set-MousePointerStyle -Style $MousePointerStyles.White
+
+## Size
+Set-MousePointerSize -Size 1
+
+## "Touch indicator" and "Make the circle darker and larger"
+Set-TouchIndicator -Enabled $false -DarkerAndLargerCircle $false

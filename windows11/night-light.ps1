@@ -11,15 +11,6 @@ if (!(Test-Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudStore\Stor
 $blueLightReductionState = ConvertTo-ByteArray-For-Registry "43,42,01,00,0a,02,01,00,2a,06,b0,ad,c0,a8,06,2a,2b,0e,10,43,42,01,00,c6,14,bf,ff,ea,98,e4,da,fb,ec,01,00,00,00,00"
 Set-ItemProperty -Path HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.bluelightreductionstate\windows.data.bluelightreduction.bluelightreductionstate -Name Data -Value ([byte[]]($blueLightReductionState))
 
-### Research
-
-# Strength updates                    HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.settings\windows.data.bluelightreduction.settings\Data
-# Schedule night light On/Off updates HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.settings\windows.data.bluelightreduction.settings\Data
-# Set hours Turn On updates           HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.settings\windows.data.bluelightreduction.settings\Data
-# Set hours Turn Off updates          HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.settings\windows.data.bluelightreduction.settings\Data
-# Turn on now updates                 HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.bluelightreductionstate\windows.data.bluelightreduction.bluelightreductionstate\Data
-# Turn off now updates                HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.bluelightreductionstate\windows.data.bluelightreduction.bluelightreductionstate\Data
-
 $data = (0x43, 0x42, 0x01, 0x00, 0x0A, 0x02, 0x01, 0x00, 0x2A, 0x06)
 $epochTime = [System.DateTimeOffset]::new((date)).ToUnixTimeSeconds()
 $data += $epochTime -band 0x7F -bor 0x80

@@ -1,6 +1,53 @@
 # Night light registry key values
 
-## Real example values
+A special thanks to [Ben N on StackOverflow](https://superuser.com/a/1209192) for posting the basis for getting this working in Windows 10 21H2.
+
+## Registry Keys
+
+There are two registry values for dealing with the Night light settings in Windows 11 22H2:
+
+* The actual Night light settings get stored in the Registry as Hexidecimal in a `REG_BINARY` Value named `Data` under the Registry Key `HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.settings\windows.data.bluelightreduction.settings`.
+* The toggle or On/Off value for the Night light functionality overall gets stored in the Registry as Hexidecimal in a `REG_BINARY` Value named `Data` under the Registry Key `HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.bluelightreductionstate\windows.data.bluelightreduction.bluelightreductionstate\Data`.
+
+### Key breakdown
+
+| Purpose                             | Registry Key |
+|-|-|
+| Strength updates                    | `HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.settings\windows.data.bluelightreduction.settings\Data` |
+| Schedule night light On/Off updates | `HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.settings\windows.data.bluelightreduction.settings\Data` |
+| Set hours Turn On updates           | `HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.settings\windows.data.bluelightreduction.settings\Data` |
+| Set hours Turn Off updates          | `HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.settings\windows.data.bluelightreduction.settings\Data` |
+| Turn on now updates                 | `HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.bluelightreductionstate\windows.data.bluelightreduction.bluelightreductionstate\Data` |
+| Turn off now updates                | `HKCU\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default$windows.data.bluelightreduction.bluelightreductionstate\windows.data.bluelightreduction.bluelightreductionstate\Data` |
+
+## Binary Values
+
+In order to understand what is even remotely going on with the values being saved, we need to break this all out.
+
+When you save your first settings for the Night light, you'll find that the registry values look something like:
+`43,42,01,00,0a,02,01,00,2a,06,ae,eb,c2,a8,06,2a,2b,0e,23,43,42,01,00,02,01,ca,14,0e,04,00,ca,1e,0e,10,00,cf,28,d0,26,ca,32,0e,12,2e,2a,00,ca,3c,0e,06,2e,24,00,00,00,00,00`.
+
+**NOTE: This is still in-progress. I'm trying to decipher every combination of values and still have a few bits I'm unsure about. Stay tuned!**
+
+| What? | Example | Description |
+|-|-|-|
+| 10-constant bytes             | `43,42,01,00,0a,02,01,00,2a,06` | These first 10-bytes are always going to remain the same. Why not, right? Yay Windows! |
+| Unix Timestamp bits 0-6       | `ae`                            | top bit 7 is always set |
+| Unix Timestamp bits 7-13      | `eb`                            | top bit 7 is always set |
+| Unix Timestamp bits 14-20     | `c2`                            | top bit 7 is always set |
+| Unix Timestamp bits 21-27     | `a8`                            | top bit 7 is always set |
+| Unix Timestamp bits 28-31     | `06`                            | top bit 7 is _NOT_ set |
+| 3-constant bytes              | `2a,2b,0e`                      | These 3-bytes are always going to remain the same...lame! |
+| Flag representing Schedule    | `1c`                            | `1c` = Off, `23` = Sunset to sunrise, `1e` = Set hours |
+| 4-constant bytes              | `43,42,01,00`                   | These 4-bytes are always going to remain the same |
+| Is Schedule enabled?          | `02,01`                         | Only gets added if Schedule enabled. Missing if not. Dumb. |
+| | | |
+| | | |
+| | | |
+| | | |
+| 5-constant bytes              | `00,00,00,00,00`                | Why not? Right?? |
+
+### Real example values
 
 These are REAL registry key values taken as samples to figure out how the hell the Night light binary values work in Windows 11 22H2.
 
@@ -55,7 +102,7 @@ These are REAL registry key values taken as samples to figure out how the hell t
 | On / 63 / 7pm-545am     | `43,42,01,00,0a,02,01,00,2a,06,82,87,c6,a8,06,2a,2b,0e,28,43,42,01,00,02,01,c2,0a,00,ca,14,0e,13,00,ca,1e,0e,05,2e,2d,00,cf,28,b2,31,ca,32,0e,12,2e,28,00,ca,3c,0e,06,2e,25,00,00,00,00,00` |
 | On / 100 / 7pm-545am    | `43,42,01,00,0a,02,01,00,2a,06,a6,87,c6,a8,06,2a,2b,0e,28,43,42,01,00,02,01,c2,0a,00,ca,14,0e,13,00,ca,1e,0e,05,2e,2d,00,cf,28,e0,12,ca,32,0e,12,2e,28,00,ca,3c,0e,06,2e,25,00,00,00,00,00` |
 
-## Value Break-out
+### Binary Value Breakdown
 
 This breaks-out the constant vs. non-constant values.
 
@@ -110,7 +157,7 @@ This breaks-out the constant vs. non-constant values.
 | On / 63 / 7pm-545am     | `43,42,01,00,0a,02,01,00,2a,06` | `82,87,c6,a8,06` | `2a,2b,0e` | `28,43,42,01,00,02,01,c2,0a,00,ca,14,0e,13,00,ca,1e,0e,05,2e,2d,00,cf,28,b2,31`       | `ca,32,0e,12,2e,28,00,ca,3c,0e,06,2e,25,00,00,00,00,00` |
 | On / 100 / 7pm-545am    | `43,42,01,00,0a,02,01,00,2a,06` | `a6,87,c6,a8,06` | `2a,2b,0e` | `28,43,42,01,00,02,01,c2,0a,00,ca,14,0e,13,00,ca,1e,0e,05,2e,2d,00,cf,28,e0,12`       | `ca,32,0e,12,2e,28,00,ca,3c,0e,06,2e,25,00,00,00,00,00` |
 
-## TBD Break-out
+### Remaining Binary Value Breakdown
 
 | Scenario                | TBD  | Constant      | Schedule | TBD        | Constant | TBD           | Constant      | TBD           | Constant | Strength  |
 |-|-|-|-|-|-|-|-|-|-|-|

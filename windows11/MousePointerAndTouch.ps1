@@ -1,20 +1,35 @@
+#######################################################################################################################
+# This file houses the functionality to change the "Mouse Pointer Style" under Accessibility -> Mouse pointer and touch
+#######################################################################################################################
+
 $private:systemRootCursors = "%SystemRoot%\cursors"
 $private:appDataLocalCursors = "%LOCALAPPDATA%\Microsoft\Windows\Cursors"
 
+# See https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfoa
+$systemWideParameters = @{
+    # Accessibility
+    SPI_SETCURSORS = 0x0057
+
+    # Input
+    SPI_SETCONTACTVISUALIZATION = 0x2019
+    SPI_SETGESTUREVISUALIZATION = 0x201B
+}
+
 #######################################################################################################################
+# This is needed, as setting registry values alone is not enough.
 #
 # See https://devblogs.microsoft.com/scripting/use-powershell-to-change-the-mouse-pointer-scheme/
-# See https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfoa?redirectedfrom=MSDN
-# See: https://stackoverflow.com/questions/63593930/how-to-call-a-win32-api-function-from-powershell
+# See https://stackoverflow.com/questions/63593930/how-to-call-a-win32-api-function-from-powershell
+# See https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes
 
 Add-Type -TypeDefinition @"
     using System;
     using System.Diagnostics;
     using System.Runtime.InteropServices;
 
-    public static class CursorRefresh
+    public static class WinAPI
     {
-        [DllImport("user32.dll", EntryPoint="SystemParametersInfo")]
+        [DllImport("user32.dll", SetLastError = true, EntryPoint = "SystemParametersInfo")]
         public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, uint pvParam, uint fWinIni);
     }
 "@
@@ -145,11 +160,34 @@ $MousePointerStyles = @{
         "$systemRootCursors\up_i.cur",          # UpArrow
         "$systemRootCursors\busy_i.cur"         # Wait
     )
+
+    Custom = [MousePointerStyle]::new(
+        "Windows Aero",                         # Name
+        "$appDataLocalCursors\busy_eoa.cur",    # AppStarting
+        "$appDataLocalCursors\arrow_eoa.cur",   # Arrow
+        "$appDataLocalCursors\cross_eoa.cur",   # Crosshair
+        6,                                      # CursorType
+        "$appDataLocalCursors\link_eoa.cur",    # Hand
+        "$appDataLocalCursors\helpsel_eoa.cur", # Help
+        "$appDataLocalCursors\ibeam_eoa.cur",   # IBeam
+        "$appDataLocalCursors\unavail_eoa.cur", # No
+        "$appDataLocalCursors\pen_eoa.cur",     # NWPen
+        2,                                      # SchemeSource
+        "$appDataLocalCursors\move_eoa.cur",    # SizeAll
+        "$appDataLocalCursors\nesw_eoa.cur",    # SizeNESW
+        "$appDataLocalCursors\ns_eoa.cur",      # SizeNS
+        "$appDataLocalCursors\nwse_eoa.cur",    # SizeNWSE
+        "$appDataLocalCursors\ew_eoa.cur",      # SizeWE
+        "$appDataLocalCursors\up_eoa.cur",      # UpArrow
+        "$appDataLocalCursors\wait_eoa.cur"     # Wait
+    )
 }
 
 function Set-MousePointerStyle {
     param(
-        [MousePointerStyle]$MousePointerStyle
+        [Parameter(Mandatory=$true)]
+        [MousePointerStyle]
+        $Style
     )
 
     $registryPath = "HKCU:\Control Panel\Cursors"
@@ -174,6 +212,60 @@ function Set-MousePointerStyle {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Accessibility" -Name "CursorType" -Value $MousePointerStyle.CursorType
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes" -Name "CurrentTheme" -Value "$appDataLocalCursors\Microsoft\Windows\Themes\Custom.theme"
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\HighContrast" -Name "Pre-High Contrast Scheme" -Value "$appDataLocalCursors\Microsoft\Windows\Themes\Custom.theme"
-    
-    [CursorRefresh]::SystemParametersInfo(0x0057, 0, $null, 0)
+
+    if (![WinAPI]::SystemParametersInfo($systemWideParameters.SPI_SETCURSORS, 0, $null, 0)) {
+        [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
+    }
+}
+
+function Set-MousePointerSize {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateRange(1,15)]
+        [int]$Size
+    )
+
+}
+
+<#
+This handles both "Touch indicator" and "Make the circle darker and larger" as a single function.
+The behavior of the Windows Settings UI modifies both sets of values together, regardless of order toggled.
+#>
+function Set-TouchIndicator {
+    param(
+        [Parameter(Mandatory=$true)]
+        [bool]
+        $Enabled,
+        
+        [Parameter(Mandatory=$true)]
+        [bool]
+        $DarkerAndLargerCircle
+    )
+
+    $registryPath = "HKCU:\Control Panel\Cursors"
+
+    # Defaults to "Disabled"
+    $gestureVisualization = 24
+    $contactVisualization = 0
+
+    if ($Enabled) {
+        $gestureVisualization = 31
+
+        if ($DarkerAndLargerCircle) {
+            $contactVisualization = 2
+        } else {
+            $contactVisualization = 1
+        }
+    }
+
+    Set-ItemProperty -Path $registryPath -Name "ContactVisualization" -Value $contactVisualization
+    Set-ItemProperty -Path $registryPath -Name "GestureVisualization" -Value $gestureVisualization
+
+    if (![WinAPI]::SystemParametersInfo($systemWideParameters.SPI_SETCONTACTVISUALIZATION, 0, $contactVisualization, 0)) {
+        [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
+    }
+
+    if (![WinAPI]::SystemParametersInfo($systemWideParameters.SPI_SETGESTUREVISUALIZATION, 0, $gestureVisualization, 0)) {
+        [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
+    }
 }
