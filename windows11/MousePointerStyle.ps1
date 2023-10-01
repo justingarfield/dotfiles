@@ -1,6 +1,26 @@
 $private:systemRootCursors = "%SystemRoot%\cursors"
 $private:appDataLocalCursors = "%LOCALAPPDATA%\Microsoft\Windows\Cursors"
 
+#######################################################################################################################
+#
+# See https://devblogs.microsoft.com/scripting/use-powershell-to-change-the-mouse-pointer-scheme/
+# See https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfoa?redirectedfrom=MSDN
+# See: https://stackoverflow.com/questions/63593930/how-to-call-a-win32-api-function-from-powershell
+
+Add-Type -TypeDefinition @"
+    using System;
+    using System.Diagnostics;
+    using System.Runtime.InteropServices;
+
+    public static class CursorRefresh
+    {
+        [DllImport("user32.dll", EntryPoint="SystemParametersInfo")]
+        public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, uint pvParam, uint fWinIni);
+    }
+"@
+
+#######################################################################################################################
+
 class MousePointerStyle {
     [string]$Name
     [string]$AppStarting
@@ -154,4 +174,6 @@ function Set-MousePointerStyle {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Accessibility" -Name "CursorType" -Value $MousePointerStyle.CursorType
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes" -Name "CurrentTheme" -Value "$appDataLocalCursors\Microsoft\Windows\Themes\Custom.theme"
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\HighContrast" -Name "Pre-High Contrast Scheme" -Value "$appDataLocalCursors\Microsoft\Windows\Themes\Custom.theme"
+    
+    [CursorRefresh]::SystemParametersInfo(0x0057, 0, $null, 0)
 }
