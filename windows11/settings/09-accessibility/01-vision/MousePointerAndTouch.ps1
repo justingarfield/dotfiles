@@ -254,6 +254,11 @@ function Set-MousePointerStyle {
     if (![WinAPI]::SystemParametersInfo($systemWideParameters.SPI_SETCURSORS, 0, $null, 0)) {
         [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
     }
+    
+    # See https://stackoverflow.com/a/69687213
+    if (![WinAPI]::SystemParametersInfo(0x2029, 0, 16, 0x01)) {
+        [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
+    }
 }
 
 function Set-MousePointerSize {

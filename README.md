@@ -2,6 +2,10 @@
 
 My personal dotfiles.
 
+## Prereqs
+
+* Windows 11 folder expects you're running PowerShell 7 _(I'm using the ternary operator)_.
+
 ## Status
 
 Working heavily on Windows 11 provisioning process...It's not ready yet, so hold-fast while I get it finished.

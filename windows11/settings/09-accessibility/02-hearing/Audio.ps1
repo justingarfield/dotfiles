@@ -1,6 +1,6 @@
-################################################################################################
+##################################################################################################
 # This file houses the functionality to change the "Audio Settings" under Accessibility -> Audio
-################################################################################################
+##################################################################################################
 
 function Set-MonoAudio {
     param(
@@ -9,10 +9,7 @@ function Set-MonoAudio {
         $Enabled
     )
 
-    $value = 0
-    if ($Enabled) {
-        $value = 1
-    }
+    $value = $Enabled ? 1 : 0
 
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Multimedia\Audio" -Name "AccessibilityMonoMixState" -Value $value
 
