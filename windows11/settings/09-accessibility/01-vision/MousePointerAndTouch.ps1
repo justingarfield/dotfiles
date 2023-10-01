@@ -9,6 +9,7 @@ $appDataLocalCursors = "$ENV:LOCALAPPDATA\Microsoft\Windows\Cursors"
 $systemWideParameters = @{
     # Accessibility
     SPI_SETCURSORS = 0x0057
+    MYSTERY_VALUE = 0x2029 # Undocumented, but changes Cursor Size without a reboot!
 
     # Input
     SPI_SETCONTACTVISUALIZATION = 0x2019
@@ -176,14 +177,6 @@ $MousePointerStyles = @{
     )
 }
 
-function Get-CursorSize {
-    Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Accessibility" -Name "CursorSize"
-}
-
-function Get-CursorBaseSize {
-    Get-ItemPropertyValue -Path "HKCU:\Control Panel\Cursors" -Name "CursorBaseSize"
-}
-
 function Set-MousePointerStyle {
     param(
         [Parameter(Mandatory=$true)]
@@ -256,7 +249,7 @@ function Set-MousePointerStyle {
     }
     
     # See https://stackoverflow.com/a/69687213
-    if (![WinAPI]::SystemParametersInfo(0x2029, 0, 16, 0x01)) {
+    if (![WinAPI]::SystemParametersInfo($systemWideParameters.MYSTERY_VALUE, 0, $cursorBaseSize, 0x01)) {
         [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
     }
 }
