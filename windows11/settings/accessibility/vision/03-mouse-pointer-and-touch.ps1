@@ -6,7 +6,7 @@
 Set-MousePointerStyle -Style $MousePointerStyles.White
 
 ## Size
-Set-MousePointerSize -Size 1
+# Set-MousePointerSize -Size 6
 
 ## "Touch indicator" and "Make the circle darker and larger"
-Set-TouchIndicator -Enabled $false -DarkerAndLargerCircle $false
+# Set-TouchIndicator -Enabled $false -DarkerAndLargerCircle $false

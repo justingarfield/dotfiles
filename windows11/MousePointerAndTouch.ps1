@@ -2,13 +2,16 @@
 # This file houses the functionality to change the "Mouse Pointer Style" under Accessibility -> Mouse pointer and touch
 #######################################################################################################################
 
-$private:systemRootCursors = "%SystemRoot%\cursors"
-$private:appDataLocalCursors = "%LOCALAPPDATA%\Microsoft\Windows\Cursors"
+$systemRootCursors = "%SystemRoot%\cursors"
+$appDataLocalCursors = "$ENV:LOCALAPPDATA\Microsoft\Windows\Cursors"
 
 # See https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfoa
 $systemWideParameters = @{
     # Accessibility
     SPI_SETCURSORS = 0x0057
+
+    # Icon
+    SPI_SETICONS = 0x0058
 
     # Input
     SPI_SETCONTACTVISUALIZATION = 0x2019
@@ -47,7 +50,6 @@ class MousePointerStyle {
     [string]$IBeam
     [string]$No
     [string]$NWPen
-    [int]$SchemeSource
     [string]$SizeAll
     [string]$SizeNESW
     [string]$SizeNS
@@ -67,7 +69,6 @@ class MousePointerStyle {
         [string]$IBeam,
         [string]$No,
         [string]$NWPen,
-        [int]$SchemeSource,
         [string]$SizeAll,
         [string]$SizeNESW,
         [string]$SizeNS,
@@ -86,7 +87,6 @@ class MousePointerStyle {
         $this.IBeam = $IBeam
         $this.No = $No
         $this.NWPen = $NWPen
-        $this.SchemeSource = $SchemeSource
         $this.SizeAll = $SizeAll
         $this.SizeNESW = $SizeNESW
         $this.SizeNS = $SizeNS
@@ -109,7 +109,6 @@ $MousePointerStyles = @{
         "",                                     # IBeam ('Windows Aero' currently sets this to blank)
         "$systemRootCursors\aero_unavail.cur",  # No
         "$systemRootCursors\aero_pen.cur",      # NWPen
-        2,                                      # SchemeSource
         "$systemRootCursors\aero_move.cur",     # SizeAll
         "$systemRootCursors\aero_nesw.cur",     # SizeNESW
         "$systemRootCursors\aero_ns.cur",       # SizeNS
@@ -130,7 +129,6 @@ $MousePointerStyles = @{
         "$systemRootCursors\beam_r.cur",        # IBeam
         "$systemRootCursors\no_r.cur",          # No
         "$systemRootCursors\pen_r.cur",         # NWPen
-        2,                                      # SchemeSource
         "$systemRootCursors\move_r.cur",        # SizeAll
         "$systemRootCursors\size1_r.cur",       # SizeNESW
         "$systemRootCursors\size4_r.cur",       # SizeNS
@@ -151,7 +149,6 @@ $MousePointerStyles = @{
         "$systemRootCursors\beam_i.cur",        # IBeam
         "$systemRootCursors\no_i.cur",          # No
         "$systemRootCursors\pen_i.cur",         # NWPen
-        2,                                      # SchemeSource
         "$systemRootCursors\move_i.cur",        # SizeAll
         "$systemRootCursors\size1_i.cur",       # SizeNESW
         "$systemRootCursors\size4_i.cur",       # SizeNS
@@ -172,7 +169,6 @@ $MousePointerStyles = @{
         "$appDataLocalCursors\ibeam_eoa.cur",   # IBeam
         "$appDataLocalCursors\unavail_eoa.cur", # No
         "$appDataLocalCursors\pen_eoa.cur",     # NWPen
-        2,                                      # SchemeSource
         "$appDataLocalCursors\move_eoa.cur",    # SizeAll
         "$appDataLocalCursors\nesw_eoa.cur",    # SizeNESW
         "$appDataLocalCursors\ns_eoa.cur",      # SizeNS
@@ -183,33 +179,78 @@ $MousePointerStyles = @{
     )
 }
 
+function Get-CursorSize {
+    Get-ItemPropertyValue -Path "HKCU:\Software\Microsoft\Accessibility" -Name "CursorSize"
+}
+
+function Get-CursorBaseSize {
+    Get-ItemPropertyValue -Path "HKCU:\Control Panel\Cursors" -Name "CursorBaseSize"
+}
+
 function Set-MousePointerStyle {
     param(
         [Parameter(Mandatory=$true)]
         [MousePointerStyle]
-        $Style
+        $Style,
+        
+        [ValidateRange(1,15)]
+        [int]
+        $CursorSize = 1
     )
+    
+    if ($CursorSize -gt 1 -And $CursorType -ne 6) {
+        $customStyle = $MousePointerStyles.Custom
+        $customStyle.Name = $Style.Name
+        $customStyle.CursorType = $Style.CursorType
+        $Style = $customStyle
+    }
+
+    # CursorType gets +3 if there's a non-default Pointer Size involved..."No idea...I just work here".
+    $cursorType = $Style.CursorType
+    Write-Host "CursorSize: $CursorSize"
+    Write-Host "cursorType A: $cursorType"
+    if ($CursorSize -gt 1 -And $CursorType -ne 6) {
+        $cursorType += 3
+    }
+    Write-Host "cursorType B: $cursorType"
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Accessibility" -Name "CursorType" -Value $cursorType
 
     $registryPath = "HKCU:\Control Panel\Cursors"
-    Set-ItemProperty -Path $registryPath -Name "(Default)" -Value $MousePointerStyle.Name
-    Set-ItemProperty -Path $registryPath -Name "AppStarting" -Value $MousePointerStyle.AppStarting
-    Set-ItemProperty -Path $registryPath -Name "Arrow" -Value $MousePointerStyle.Arrow
-    Set-ItemProperty -Path $registryPath -Name "Crosshair" -Value $MousePointerStyle.Crosshair
-    Set-ItemProperty -Path $registryPath -Name "Hand" -Value $MousePointerStyle.Hand
-    Set-ItemProperty -Path $registryPath -Name "Help" -Value $MousePointerStyle.Help
-    Set-ItemProperty -Path $registryPath -Name "IBeam" -Value $MousePointerStyle.IBeam
-    Set-ItemProperty -Path $registryPath -Name "No" -Value $MousePointerStyle.No
-    Set-ItemProperty -Path $registryPath -Name "NWPen" -Value $MousePointerStyle.NWPen
-    Set-ItemProperty -Path $registryPath -Name "Scheme Source" -Value $MousePointerStyle.SchemeSource
-    Set-ItemProperty -Path $registryPath -Name "SizeAll" -Value $MousePointerStyle.SizeAll
-    Set-ItemProperty -Path $registryPath -Name "SizeNESW" -Value $MousePointerStyle.SizeNESW
-    Set-ItemProperty -Path $registryPath -Name "SizeNS" -Value $MousePointerStyle.SizeNS
-    Set-ItemProperty -Path $registryPath -Name "SizeNWSE" -Value $MousePointerStyle.SizeNWSE
-    Set-ItemProperty -Path $registryPath -Name "SizeWE" -Value $MousePointerStyle.SizeWE
-    Set-ItemProperty -Path $registryPath -Name "UpArrow" -Value $MousePointerStyle.UpArrow
-    Set-ItemProperty -Path $registryPath -Name "Wait" -Value $MousePointerStyle.Wait
+    Set-ItemProperty -Path $registryPath -Name "(Default)" -Value $Style.Name
+    Set-ItemProperty -Path $registryPath -Name "AppStarting" -Value $Style.AppStarting
+    Set-ItemProperty -Path $registryPath -Name "Arrow" -Value $Style.Arrow
+    Set-ItemProperty -Path $registryPath -Name "Crosshair" -Value $Style.Crosshair
+    Set-ItemProperty -Path $registryPath -Name "Hand" -Value $Style.Hand
+    Set-ItemProperty -Path $registryPath -Name "Help" -Value $Style.Help
+    Set-ItemProperty -Path $registryPath -Name "IBeam" -Value $Style.IBeam
+    Set-ItemProperty -Path $registryPath -Name "No" -Value $Style.No
+    Set-ItemProperty -Path $registryPath -Name "NWPen" -Value $Style.NWPen
 
-    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Accessibility" -Name "CursorType" -Value $MousePointerStyle.CursorType
+    # These two values are only set explicitly with 'Custom' Style / Pointer Size changes
+    if ($CursorType -gt 2 -And $CursorType -lt 7) {
+        Write-Host "appDataLocalCursors: $appDataLocalCursors"
+        Set-ItemProperty -Path $registryPath -Name "Person" -Value "$appDataLocalCursors\person_eoa.cur"
+        Set-ItemProperty -Path $registryPath -Name "Pin" -Value "$appDataLocalCursors\pin_eoa.cur"
+    }
+
+    # Currently always seems to get set to 2 no matter what
+    Set-ItemProperty -Path $registryPath -Name "Scheme Source" -Value 2
+
+    Set-ItemProperty -Path $registryPath -Name "SizeAll" -Value $Style.SizeAll
+    Set-ItemProperty -Path $registryPath -Name "SizeNESW" -Value $Style.SizeNESW
+    Set-ItemProperty -Path $registryPath -Name "SizeNS" -Value $Style.SizeNS
+    Set-ItemProperty -Path $registryPath -Name "SizeNWSE" -Value $Style.SizeNWSE
+    Set-ItemProperty -Path $registryPath -Name "SizeWE" -Value $Style.SizeWE
+    Set-ItemProperty -Path $registryPath -Name "UpArrow" -Value $Style.UpArrow
+    Set-ItemProperty -Path $registryPath -Name "Wait" -Value $Style.Wait
+
+    # Deal with Cursor Sizes
+    $cursorBaseSize = 16 + (16 * $CursorSize)
+    
+    Write-Host "cursorBaseSize: $cursorBaseSize"
+    Set-ItemProperty -Path $registryPath -Name "CursorBaseSize" -Value $cursorBaseSize
+    Set-ItemProperty -Path "HKCU:\Software\Microsoft\Accessibility" -Name "CursorSize" -Value $CursorSize
+
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes" -Name "CurrentTheme" -Value "$appDataLocalCursors\Microsoft\Windows\Themes\Custom.theme"
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\HighContrast" -Name "Pre-High Contrast Scheme" -Value "$appDataLocalCursors\Microsoft\Windows\Themes\Custom.theme"
 
@@ -225,6 +266,7 @@ function Set-MousePointerSize {
         [int]$Size
     )
 
+    Set-MousePointerStyle -Style $MousePointerStyles.Custom -CursorSize $Size
 }
 
 <#
