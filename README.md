@@ -2,15 +2,15 @@
 
 My personal dotfiles.
 
-## Prereqs
-
-* Windows 11 folder expects you're running PowerShell 7 _(I'm using the ternary operator)_.
-
-## Status
+## Repository Status
 
 Working heavily on Windows 11 provisioning process...It's not ready yet, so hold-fast while I get it finished.
 
 Things like the Night Light and Mouse Pointer Style / Size are a super PITA to toggle correctly, so it's taking a few.
+
+## Prereqs
+
+* Windows 11 folder expects you're running PowerShell 7 _(I'm using the ternary operator)_.
 
 ## References and Inspiration
 

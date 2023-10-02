@@ -1,5 +1,6 @@
 # Settings -> Accessibility -> Mouse pointer and touch
 
+# Source the required functions and helpers
 . .\MousePointerAndTouch.ps1
 
 ## Mouse pointer style

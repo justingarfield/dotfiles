@@ -2,6 +2,9 @@
 # This file houses the functionality to change the "Audio Settings" under Accessibility -> Audio
 ##################################################################################################
 
+# Source the required functions and helpers
+. ..\..\WinServices.ps1
+
 function Set-MonoAudio {
     param(
         [Parameter(Mandatory=$true)]
@@ -14,6 +17,5 @@ function Set-MonoAudio {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Multimedia\Audio" -Name "AccessibilityMonoMixState" -Value $value
 
     # Restart the "Windows Audio" service
-    Start-Process -FilePath "net.exe" -ArgumentList "STOP Audiosrv" -Wait -Verb RunAs
-    Start-Process -FilePath "net.exe" -ArgumentList "START Audiosrv" -Wait -Verb RunAs
+    Restart-WindowsService -ServiceName "Audiosrv"
 }

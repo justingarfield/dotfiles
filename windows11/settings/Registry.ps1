@@ -1,29 +1,3 @@
-function VM-EnableNestedVirtualization([Parameter(mandatory=$true)][String] $VMName) {
-    Set-VMProcessor -VMName $VMName -ExposeVirtualizationExtensions $True
-}
-
-function ConvertTo-ByteArray-For-Registry {
-    param (
-        [string]
-        $value
-    )
-
-    $commaSplitValues = $value.Split(',')
-    $finalSplitValues = @()
-    $commaSplitValues | ForEach-Object {
-        $split = $_.Split(' ')
-        if ($split) {
-            $finalSplitValues += $_.Split(' ')
-        } else {
-            Write-Warning "Malformed input detected. Please check your input string."
-            return
-        }
-    }
-
-    $hexValues = $finalSplitValues.Split(',') | ForEach-Object { "0x$_"}
-    return  ([byte[]]($hexValues))
-}
-
 # "VRROptimizeEnable=1;SwapEffectUpgradeEnable=0;"
 function Update-MultiKey-Registry-Entry {
     param (

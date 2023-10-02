@@ -1,6 +1,6 @@
 # Settings -> Accessibility -> Audio
 
-# Source the required Audio functions and helpers
+# Source the required functions and helpers
 . .\Audio.ps1
 
 ## "Mono audio" - Enable: 1, Disable: 0

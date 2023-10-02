@@ -1,41 +1,14 @@
 #######################################################################################################################
 # This file houses the functionality to change the "Mouse Pointer Style" under Accessibility -> Mouse pointer and touch
+#
+# # See https://devblogs.microsoft.com/scripting/use-powershell-to-change-the-mouse-pointer-scheme/
 #######################################################################################################################
+
+# Source the required functions and helpers
+. ..\..\WinUser.ps1
 
 $systemRootCursors = "%SystemRoot%\cursors"
 $appDataLocalCursors = "$ENV:LOCALAPPDATA\Microsoft\Windows\Cursors"
-
-# See https://learn.microsoft.com/en-us/windows/win32/api/winuser/nf-winuser-systemparametersinfoa
-$systemWideParameters = @{
-    # Accessibility
-    SPI_SETCURSORS = 0x0057
-    MYSTERY_VALUE = 0x2029 # Undocumented, but changes Cursor Size without a reboot!
-
-    # Input
-    SPI_SETCONTACTVISUALIZATION = 0x2019
-    SPI_SETGESTUREVISUALIZATION = 0x201B
-}
-
-#######################################################################################################################
-# This is needed, as setting registry values alone is not enough.
-#
-# See https://devblogs.microsoft.com/scripting/use-powershell-to-change-the-mouse-pointer-scheme/
-# See https://stackoverflow.com/questions/63593930/how-to-call-a-win32-api-function-from-powershell
-# See https://learn.microsoft.com/en-us/windows/win32/debug/system-error-codes
-
-Add-Type -TypeDefinition @"
-    using System;
-    using System.Diagnostics;
-    using System.Runtime.InteropServices;
-
-    public static class WinAPI
-    {
-        [DllImport("user32.dll", SetLastError = true, EntryPoint = "SystemParametersInfo")]
-        public static extern bool SystemParametersInfo(uint uiAction, uint uiParam, uint pvParam, uint fWinIni);
-    }
-"@
-
-#######################################################################################################################
 
 class MousePointerStyle {
     [string]$Name
@@ -195,7 +168,7 @@ function Set-MousePointerStyle {
         $Style = $customStyle
     }
 
-    # CursorType gets +3 if there's a non-default Pointer Size involved..."No idea...I just work here".
+    # CursorType gets +3 if there's a non-default Pointer Size involved..."No idea, I just work here."
     $cursorType = $Style.CursorType
     Write-Host "CursorSize: $CursorSize"
     Write-Host "cursorType A: $cursorType"

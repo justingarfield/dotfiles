@@ -1,3 +1,27 @@
+function ConvertTo-ByteArray-For-Registry {
+    param (
+        [string]
+        $value
+    )
+
+    $commaSplitValues = $value.Split(',')
+    $finalSplitValues = @()
+    $commaSplitValues | ForEach-Object {
+        $split = $_.Split(' ')
+        if ($split) {
+            $finalSplitValues += $_.Split(' ')
+        } else {
+            Write-Warning "Malformed input detected. Please check your input string."
+            return
+        }
+    }
+
+    $hexValues = $finalSplitValues.Split(',') | ForEach-Object { "0x$_"}
+    return  ([byte[]]($hexValues))
+}
+
+
+
 # Copyright (c) Microsoft Corporation. All rights reserved.
 # Licensed under the MIT License.
 
