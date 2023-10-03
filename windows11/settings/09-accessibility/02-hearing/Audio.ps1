@@ -34,8 +34,8 @@ function Set-ScreenFlashAudioNotifications {
         $AudioNotificationScreenFlashType
     )
 
-    $enumValue = [int]([AudioNotificationScreenFlashTypes]::$AudioNotificationScreenFlashType)
+    $audioNotificationScreenFlashTypeValue = [int]([AudioNotificationScreenFlashTypes]::$AudioNotificationScreenFlashType)
     
     # Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\SoundSentry" -Name "Flags" -Value 3
-    Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\SoundSentry" -Name "WindowsEffect" -Value $enumValue
+    Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\SoundSentry" -Name "WindowsEffect" -Value $audioNotificationScreenFlashTypeValue
 }
