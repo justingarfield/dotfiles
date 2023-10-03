@@ -19,3 +19,23 @@ function Set-MonoAudio {
     # Restart the "Windows Audio" service
     Restart-WindowsService -ServiceName "Audiosrv"
 }
+
+enum AudioNotificationScreenFlashTypes {
+    Never = 0
+    FlashTitleBar = 1
+    FlashActiveWindow = 2
+    FlashEntireScreen = 3
+}
+
+function Set-ScreenFlashAudioNotifications {
+    param(
+        [Parameter(Mandatory=$true)]
+        [AudioNotificationScreenFlashTypes]
+        $AudioNotificationScreenFlashType
+    )
+
+    $enumValue = [int]([AudioNotificationScreenFlashTypes]::$AudioNotificationScreenFlashType)
+    
+    # Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\SoundSentry" -Name "Flags" -Value 3
+    Set-ItemProperty -Path "HKCU:\Control Panel\Accessibility\SoundSentry" -Name "WindowsEffect" -Value $enumValue
+}

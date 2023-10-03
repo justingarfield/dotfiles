@@ -217,12 +217,12 @@ function Set-MousePointerStyle {
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes" -Name "CurrentTheme" -Value "$appDataLocalCursors\Microsoft\Windows\Themes\Custom.theme"
     Set-ItemProperty -Path "HKCU:\Software\Microsoft\Windows\CurrentVersion\Themes\HighContrast" -Name "Pre-High Contrast Scheme" -Value "$appDataLocalCursors\Microsoft\Windows\Themes\Custom.theme"
 
-    if (![WinAPI]::SystemParametersInfo($systemWideParameters.SPI_SETCURSORS, 0, $null, 0)) {
+    if (![WinUser]::SystemParametersInfo($systemWideParameters.SPI_SETCURSORS, 0, $null, 0)) {
         [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
     }
     
     # See https://stackoverflow.com/a/69687213
-    if (![WinAPI]::SystemParametersInfo($systemWideParameters.MYSTERY_VALUE, 0, $cursorBaseSize, 0x01)) {
+    if (![WinUser]::SystemParametersInfo($systemWideParameters.MYSTERY_VALUE, 0, $cursorBaseSize, 0x01)) {
         [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
     }
 }
@@ -271,11 +271,11 @@ function Set-TouchIndicator {
     Set-ItemProperty -Path $registryPath -Name "ContactVisualization" -Value $contactVisualization
     Set-ItemProperty -Path $registryPath -Name "GestureVisualization" -Value $gestureVisualization
 
-    if (![WinAPI]::SystemParametersInfo($systemWideParameters.SPI_SETCONTACTVISUALIZATION, 0, $contactVisualization, 0)) {
+    if (![WinUser]::SystemParametersInfo($systemWideParameters.SPI_SETCONTACTVISUALIZATION, 0, $contactVisualization, 0)) {
         [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
     }
 
-    if (![WinAPI]::SystemParametersInfo($systemWideParameters.SPI_SETGESTUREVISUALIZATION, 0, $gestureVisualization, 0)) {
+    if (![WinUser]::SystemParametersInfo($systemWideParameters.SPI_SETGESTUREVISUALIZATION, 0, $gestureVisualization, 0)) {
         [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
     }
 }
