@@ -5,4 +5,3 @@
 
 ## Text size
 Set-TextSize -Percent 100
-

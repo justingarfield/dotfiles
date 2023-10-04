@@ -9,14 +9,25 @@
 #       scripts that are used to actually make the initial Settings calls.
 #############################################################################################################
 
+$SPIF = @{
+    None = 0x00
+    SPIF_UPDATEINIFILE = 0x01
+    SPIF_SENDCHANGE = 0x02
+    SPIF_SENDWININICHANGE = 0x02
+}
+
 $systemWideParameters = @{
     # Accessibility
     SPI_SETCURSORS = 0x0057
+    SPI_SETLOGICALDPIOVERRIDE = 0x009F
     MYSTERY_VALUE = 0x2029 # Undocumented, but changes Cursor Size without a relog/reboot *shrug*
-
+    
     # Input
     SPI_SETCONTACTVISUALIZATION = 0x2019
     SPI_SETGESTUREVISUALIZATION = 0x201B
+
+    # Window
+    SPI_SETCARETWIDTH = 0x2007
 }
 
 Add-Type -TypeDefinition @"
