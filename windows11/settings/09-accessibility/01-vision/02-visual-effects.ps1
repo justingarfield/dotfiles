@@ -1,5 +1,8 @@
 # Settings -> Accessibility -> Visual effects
 
+# Source the required functions and helpers
+. .\VisualEffects.ps1
+
 ## Always show scrollbars - Enable: 0, Disable: 1
 Set-ItemProperty "HKCU:\Control Panel\Accessibility" "DynamicScrollbars" 1
 

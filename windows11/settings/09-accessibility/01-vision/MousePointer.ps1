@@ -5,68 +5,11 @@
 #######################################################################################################################
 
 # Source the required functions and helpers
+. .\MousePointerStyle.ps1
 . ..\..\WinUser.ps1
 
 $systemRootCursors = "%SystemRoot%\cursors"
 $appDataLocalCursors = "$ENV:LOCALAPPDATA\Microsoft\Windows\Cursors"
-
-class MousePointerStyle {
-    [string]$Name
-    [string]$AppStarting
-    [string]$Arrow
-    [string]$Crosshair
-    [int]$CursorType
-    [string]$Hand
-    [string]$Help
-    [string]$IBeam
-    [string]$No
-    [string]$NWPen
-    [string]$SizeAll
-    [string]$SizeNESW
-    [string]$SizeNS
-    [string]$SizeNWSE
-    [string]$SizeWE
-    [string]$UpArrow
-    [string]$Wait
-
-    MousePointerStyle(
-        [string]$Name,
-        [string]$AppStarting,
-        [string]$Arrow,
-        [string]$Crosshair,
-        [int]$CursorType,
-        [string]$Hand,
-        [string]$Help,
-        [string]$IBeam,
-        [string]$No,
-        [string]$NWPen,
-        [string]$SizeAll,
-        [string]$SizeNESW,
-        [string]$SizeNS,
-        [string]$SizeNWSE,
-        [string]$SizeWE,
-        [string]$UpArrow,
-        [string]$Wait
-    ) {
-        $this.Name = $Name
-        $this.AppStarting = $AppStarting
-        $this.Arrow = $Arrow
-        $this.Crosshair = $Crosshair
-        $this.CursorType = $CursorType
-        $this.Hand = $Hand
-        $this.Help = $Help
-        $this.IBeam = $IBeam
-        $this.No = $No
-        $this.NWPen = $NWPen
-        $this.SizeAll = $SizeAll
-        $this.SizeNESW = $SizeNESW
-        $this.SizeNS = $SizeNS
-        $this.SizeNWSE = $SizeNWSE
-        $this.SizeWE = $SizeWE
-        $this.UpArrow = $UpArrow
-        $this.Wait = $Wait
-    }
-}
 
 $MousePointerStyles = @{
     White = [MousePointerStyle]::new(
@@ -235,47 +178,4 @@ function Set-MousePointerSize {
     )
 
     Set-MousePointerStyle -Style $MousePointerStyles.Custom -CursorSize $Size
-}
-
-<#
-This handles both "Touch indicator" and "Make the circle darker and larger" as a single function.
-The behavior of the Windows Settings UI modifies both sets of values together, regardless of order toggled.
-#>
-function Set-TouchIndicator {
-    param(
-        [Parameter(Mandatory=$true)]
-        [bool]
-        $Enabled,
-        
-        [Parameter(Mandatory=$true)]
-        [bool]
-        $DarkerAndLargerCircle
-    )
-
-    $registryPath = "HKCU:\Control Panel\Cursors"
-
-    # Defaults to "Disabled"
-    $gestureVisualization = 24
-    $contactVisualization = 0
-
-    if ($Enabled) {
-        $gestureVisualization = 31
-
-        if ($DarkerAndLargerCircle) {
-            $contactVisualization = 2
-        } else {
-            $contactVisualization = 1
-        }
-    }
-
-    Set-ItemProperty -Path $registryPath -Name "ContactVisualization" -Value $contactVisualization
-    Set-ItemProperty -Path $registryPath -Name "GestureVisualization" -Value $gestureVisualization
-
-    if (![WinUser]::SystemParametersInfo($systemWideParameters.SPI_SETCONTACTVISUALIZATION, 0, $contactVisualization, 0)) {
-        [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
-    }
-
-    if (![WinUser]::SystemParametersInfo($systemWideParameters.SPI_SETGESTUREVISUALIZATION, 0, $gestureVisualization, 0)) {
-        [System.Runtime.InteropServices.Marshal]::GetLastWin32Error()
-    }
 }
