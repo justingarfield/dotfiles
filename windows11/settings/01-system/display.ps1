@@ -1,19 +1,3 @@
-# Settings -> System -> Display
-
-## Multiple displays
-
-### Extend / Duplicate these displays (Device specific)
-
-### Make this my main display (Device specific)
-
-### Remember window locations based on monitor connection - Enable: 0, Disable: 1 (Requires Sign-out or Reboot to take affect)
-Set-ItemProperty "HKCU:\Control Panel\Desktop" "RestorePreviousStateRecalcBehavior" 0
-
-### Minimize windows when a monitor is disconnected - Enable: 0, Disable: 1 (Requires Sign-out or Reboot to take affect)
-Set-ItemProperty "HKCU:\Control Panel\Desktop" "MonitorRemovalRecalcBehavior" 0
-
-### Ease cursor movement between displays - Enable: 1, Disable: 0 (Requires Sign-out or Reboot to take affect)
-Set-ItemProperty "HKCU:\Control Panel\Cursors" "CursorDeadzoneJumpingSetting" 1
 
 ## Night light
 
