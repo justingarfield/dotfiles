@@ -21,7 +21,7 @@ Contains scripts that follow along with the current state of the Windows 11 Sett
 * [Bitwise Operators in C/C++](https://www.geeksforgeeks.org/bitwise-operators-in-c-cpp)
 * [Bitwise operators in PowerShell](https://4sysops.com/archives/bitwise-operators-in-powershell-band-bor-bxor-bnot-shl-and-shr/)
 * [How to set a binary registry value (REG_BINARY) with PowerShell?](https://stackoverflow.com/questions/6551224/how-to-set-a-binary-registry-value-reg-binary-with-powershell)
-* []()
+* [Powershell integer parameter validation with multiple ranges](https://stackoverflow.com/a/73663376)
 * []()
 * []()
 
