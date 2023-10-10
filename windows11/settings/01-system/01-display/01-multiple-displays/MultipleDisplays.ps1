@@ -6,7 +6,7 @@ function Set-RememberWindowLocations {
     )
 
     $value = $Enabled ? 0 : 1
-
+    
     Set-ItemProperty "HKCU:\Control Panel\Desktop" "RestorePreviousStateRecalcBehavior" $value
 }
 

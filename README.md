@@ -4,9 +4,9 @@ My personal dotfiles.
 
 ## Repository Status
 
-Working heavily on Windows 11 provisioning process...It's not ready yet, so hold-fast while I get it finished.
+Working heavily on Windows 11 provisioning process...It's not ready yet, so hold-fast while I get it finished. Things like the Night Light and Mouse Pointer Style / Size are a super PITA to toggle correctly, so it's taking a few.
 
-Things like the Night Light and Mouse Pointer Style / Size are a super PITA to toggle correctly, so it's taking a few.
+**Windows 11 functionality will be migrated to an actual PowerShell Module** once I get enough of it completed in this repository _(just makes it faster to test with atm)_.
 
 ## Prereqs
 
