@@ -41,13 +41,13 @@ function Set-ShowTimerInTheClockApp {
         $Enabled
     )
 
-    $focusRegistryKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default`$windows.data.shell.focussessionactivetheme\windows.data.shell.focussessionactivetheme`${1b019365-25a5-4ff1-b50a-c155229afc8f}"
-    $currentRegistryValue = Get-ItemPropertyValue -Path $focusRegistryKey -Name "Data" # byte[]
-
     # Need to inspect the existing registry value to see which options are checked/un-checked
-    $currentNumCheckedFocusOptions = $currentRegistryValue[16] # How many Focus options are currently checked-off
-    Write-Host "currentNumSelectedFocusOptions: $currentNumCheckedFocusOptions"
+    $currentRegistryValue = Get-ItemPropertyValue -Path $focusRegistryKey -Name "Data" # byte[]
     
+    # How many Focus options are currently checked
+    $currentNumCheckedFocusOptions = $currentRegistryValue[16]
+    
+    # Currently checked Focus option values
     $selectedFocusOptions = $currentRegistryValue[24..($currentRegistryValue.Length - 5)]
     for ($i = 0; $i -lt $selectedFocusOptions.Length; $i++) {
         Write-Host $selectedFocusOptions[$i].ToString("x")
@@ -104,7 +104,7 @@ function getTimeStampBytes {
     return $timeStampBits
 }
 
-function private:constructFinalValue {
+function constructFinalValue {
     param(
         [Parameter(Mandatory=$true)]
         [bool]
