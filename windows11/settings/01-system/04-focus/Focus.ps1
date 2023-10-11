@@ -1,3 +1,5 @@
+. ..\..\Registry.ps1
+
 $firstConstant8Bytes = (0x43, 0x42, 0x01, 0x00, 0x0a, 0x00, 0x2a, 0x06)
 $secondsConstant5Bytes = (0xa9, 0x06, 0x2a, 0x2b, 0x0e)
 $thirdConstan7Bytes = (0x43, 0x42, 0x01, 0x00, 0xc2, 0x0a, 0x01)
@@ -41,18 +43,25 @@ function Set-ShowTimerInTheClockApp {
         $Enabled
     )
 
+    CreateRegistryKeyIfMissing -RegistryKey $focusRegistryKey
+
     # Need to inspect the existing registry value to see which options are checked/un-checked
     $currentRegistryValue = Get-ItemPropertyValue -Path $focusRegistryKey -Name "Data" # byte[]
     
     # How many Focus options are currently checked
     $currentNumCheckedFocusOptions = $currentRegistryValue[16]
-    
+
     # Currently checked Focus option values
-    $selectedFocusOptions = $currentRegistryValue[24..($currentRegistryValue.Length - 5)]
-    for ($i = 0; $i -lt $selectedFocusOptions.Length; $i++) {
-        Write-Host $selectedFocusOptions[$i].ToString("x")
+    $selectedFocusOptions = [byte[]]$currentRegistryValue[24..($currentRegistryValue.Length - 5)]
+    for ($cursor = 0; $cursor -lt $selectedFocusOptions.Length; $cursor += 3) {
+        # Byte between "0xc2 (194)" and "0x01 (1)"
+        $middleByte = $selectedFocusOptions[$cursor + 1]
+
+        if ($focusOptionBits.ShowTimerInTheClockApp[1] -eq $middleByte) {
+            Write-Host "Yes!"
+        }
     }
-    
+
     $finalFocusOptionBits = @()
 
     $finalValue = $firstConstant8Bytes            # 8-bytes that never change
@@ -104,6 +113,7 @@ function getTimeStampBytes {
     return $timeStampBits
 }
 
+<#
 function constructFinalValue {
     param(
         [Parameter(Mandatory=$true)]
@@ -123,3 +133,4 @@ function constructFinalValue {
         $TurnOnDoNotDisturb
     )
 }
+#>

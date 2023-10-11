@@ -9,5 +9,16 @@
 # "Start focus session" though.
 # Set-SessionDuration 30
 
-clear
-Set-ShowTimerInTheClockApp -Enabled $true
+## Show the timer in the clock app
+#Set-ShowTimerInTheClockApp -Enabled $true
+CreateRegistryKeyIfMissing -RegistryKey "HKCU:\blah\blah2\blah3"
+Get-ItemPropertyValue -Path "HKCU:\blah\blah2\blah3" -Name "Data"
+
+## Hide badges on taskbar apps
+# Set-HideBadgesOnTaskbarApps -Enabled $true
+
+## Hide flashing on taskbar apps
+# Set-HideFlashingOnTaskbarApps -Enabled $true
+
+## Turn on do not disturb
+# Set-TurnOnDoNotDisturb -Enabled $true

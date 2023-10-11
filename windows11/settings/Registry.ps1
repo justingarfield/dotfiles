@@ -1,3 +1,30 @@
+function CreateRegistryKeyIfMissing {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateScript(
+            { $_.StartsWith("HKEY_CURRENT_USER\") -or $_.StartsWith("HKCU:\") },
+            ErrorMessage = "Value {0} must start with 'HKEY_CURRENT_USER\' or 'HKCU:\'."
+        )]
+        [string]
+        $RegistryKey
+    )
+
+    # Make everything work via HKCU:
+    $RegistryKey = $RegistryKey.Replace("HKEY_CURRENT_USER", "HKCU:")
+
+    try{  
+        Get-Item -Path $RegistryKey -ErrorAction Stop
+        Write-Host "Registry Key already exists: $RegistryKey"
+    }  
+    catch [System.Management.Automation.ItemNotFoundException] {  
+        Write-Host "Creating missing Registry Key: $RegistryKey"
+        
+        # -Force builds the full structure-out so we don't have to recursively do it
+        New-Item -Path $RegistryKey -Force
+    }
+}
+
+<#
 # "VRROptimizeEnable=1;SwapEffectUpgradeEnable=0;"
 function Update-MultiKey-Registry-Entry {
     param (
@@ -30,3 +57,4 @@ function Update-MultiKey-Registry-Entry {
     Write-Host "targetKeyValueEndIndex is: $targetKeyValueEndIndex"
     Write-Host "replace is: $replaced"
 }
+#>
