@@ -22,8 +22,8 @@ Contains scripts that follow along with the current state of the Windows 11 Sett
 * [Bitwise operators in PowerShell](https://4sysops.com/archives/bitwise-operators-in-powershell-band-bor-bxor-bnot-shl-and-shr/)
 * [How to set a binary registry value (REG_BINARY) with PowerShell?](https://stackoverflow.com/questions/6551224/how-to-set-a-binary-registry-value-reg-binary-with-powershell)
 * [Powershell integer parameter validation with multiple ranges](https://stackoverflow.com/a/73663376)
-* []()
-* []()
+* [PowerShell Byte Array And Hex Functions](https://www.sans.org/blog/powershell-byte-array-and-hex-functions/)
+* [Bitwise operation](https://en.wikipedia.org/wiki/Bitwise_operation)
 
 ### Tools and Utilities
 
@@ -39,6 +39,3 @@ Contains scripts that follow along with the current state of the Windows 11 Sett
 * [inamozov/DisplayTest](https://github.com/inamozov/DisplayTest/blob/master/DisplayTest.cpp)
 * [Maclay74/tiny-screen](https://github.com/Maclay74/tiny-screen/blob/eb829186159309f01b31fe6d4d5201b5e63e07bd/TinyScreen/Src/Services/NightLight.cs)
 * [nathanbabcock/nightlight-cli](https://github.com/nathanbabcock/nightlight-cli/blob/main/src/nightlight.ts)
-* []()
-* []()
-* []()

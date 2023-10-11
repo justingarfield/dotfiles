@@ -9,3 +9,5 @@
 # "Start focus session" though.
 # Set-SessionDuration 30
 
+clear
+Set-ShowTimerInTheClockApp -Enabled $true
