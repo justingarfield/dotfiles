@@ -13,8 +13,8 @@ function CreateRegistryKeyIfMissing {
     $RegistryKey = $RegistryKey.Replace("HKEY_CURRENT_USER", "HKCU:")
 
     try{  
-        Get-Item -Path $RegistryKey -ErrorAction Stop
-        Write-Host "Registry Key already exists: $RegistryKey"
+        Get-Item -Path $RegistryKey -ErrorAction Stop | Out-Null
+        # Write-Host "Registry Key already exists: $RegistryKey"
     }  
     catch [System.Management.Automation.ItemNotFoundException] {  
         Write-Host "Creating missing Registry Key: $RegistryKey"

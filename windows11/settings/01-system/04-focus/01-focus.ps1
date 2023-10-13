@@ -10,15 +10,13 @@
 # Set-SessionDuration 30
 
 ## Show the timer in the clock app
-#Set-ShowTimerInTheClockApp -Enabled $true
-CreateRegistryKeyIfMissing -RegistryKey "HKCU:\blah\blah2\blah3"
-Get-ItemPropertyValue -Path "HKCU:\blah\blah2\blah3" -Name "Data"
+Set-ShowTimerInTheClockApp -Enabled $true
 
 ## Hide badges on taskbar apps
-# Set-HideBadgesOnTaskbarApps -Enabled $true
+Set-HideBadgesOnTaskbarApps -Enabled $true
 
 ## Hide flashing on taskbar apps
-# Set-HideFlashingOnTaskbarApps -Enabled $true
+Set-HideFlashingOnTaskbarApps -Enabled $true
 
 ## Turn on do not disturb
-# Set-TurnOnDoNotDisturb -Enabled $true
+Set-TurnOnDoNotDisturb -Enabled $true

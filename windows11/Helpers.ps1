@@ -1,3 +1,32 @@
+
+function write-Friendly {
+    param(
+        [Parameter(Mandatory=$true)]
+        [byte[]]
+        $Value
+    )
+    
+    Write-Host ""
+    Output-ByteArrayAsHexString $Value[0..7]
+    Output-ByteArrayAsHexString $Value[8..10]
+    Output-ByteArrayAsHexString $Value[11..15]
+    Output-ByteArrayAsHexString $Value[16]
+    Output-ByteArrayAsHexString $Value[17..23]
+    Output-ByteArrayAsHexString $Value[24..($Value.Length - 5)]
+    Output-ByteArrayAsHexString $Value[($Value.Length - 4)..$Value.Length]
+}
+
+function Output-ByteArrayAsHexString {
+    param(
+        [Parameter(Mandatory=$true)]
+        [byte[]]
+        $Value
+    )
+
+    $Value | ForEach-Object { $string = $string + '0x' + $_.ToString("x2") + ' ' }
+    Write-Host $string
+}
+
 function ConvertTo-ByteArray-For-Registry {
     param (
         [string]
