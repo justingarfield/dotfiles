@@ -1,20 +1,5 @@
 . ..\..\Registry.ps1
 
-$firstConstant8Bytes = (0x43, 0x42, 0x01, 0x00, 0x0a, 0x00, 0x2a, 0x06)
-$secondsConstant5Bytes = (0xa9, 0x06, 0x2a, 0x2b, 0x0e)
-$thirdConstan7Bytes = (0x43, 0x42, 0x01, 0x00, 0xc2, 0x0a, 0x01)
-$finalConstant4Bytes = (0x00, 0x00, 0x00, 0x00)
-
-<#
-$numSelectedFocusOptions = @{
-    None = 0x08  # 8
-    One = 0x0b   # 11
-    Two = 0x0e   # 14
-    Three = 0x11 # 17
-    All = 0x14   # 20
-}
-#>
-
 $focusOptionBytes = @{
     ShowTimerInTheClockApp = (0xc2, 0x14, 0x01)    # 194, 20, 1
     HideBadgesOnTaskbarApps = (0xc2, 0x1e, 0x01)   # 194, 30, 1
@@ -23,20 +8,6 @@ $focusOptionBytes = @{
 }
 
 $focusRegistryKey = "HKCU:\Software\Microsoft\Windows\CurrentVersion\CloudStore\Store\DefaultAccount\Current\default`$windows.data.shell.focussessionactivetheme\windows.data.shell.focussessionactivetheme`${1b019365-25a5-4ff1-b50a-c155229afc8f}"
-
-function Set-SessionDuration {
-    param(
-        [Parameter(Mandatory=$true)]
-        [ValidateScript(
-            { $_ -in 5..240 -and $_ % 5 -eq 0 },
-            ErrorMessage = 'Value {0} is not between 5 and 240, nor a multiple of 5.'
-        )]
-        [int]
-        $Duration
-    )
-    
-    Write-Host "Duration passed-in was: $Duration"
-}
 
 function Set-ShowTimerInTheClockApp {
     param(
@@ -91,48 +62,24 @@ function setFocusOptionBytes {
     
     CreateRegistryKeyIfMissing -RegistryKey $focusRegistryKey
 
-    <#
-    # Need to inspect the existing registry value to see which options are checked/un-checked
-    $currentRegistryValue = Get-ItemPropertyValue -Path $focusRegistryKey -Name "Data" # byte[]
-    
-    # Currently checked Focus option values
-    $finalfocusOptionBytes = @()
-    $numCheckedFocusOptions = [byte]0x08
-    $selectedFocusOptions = [byte[]]$currentRegistryValue[24..($currentRegistryValue.Length - 5)]
-    for ($cursor = 0; $cursor -lt $selectedFocusOptions.Length; $cursor += 3) {
-        # Byte between "0xc2 (194)" and "0x01 (1)"
-        $middleByte = $selectedFocusOptions[$cursor + 1]
-
-        if (
-            (($focusOptionBytes.ShowTimerInTheClockApp[1]) -eq $middleByte -and ($Enabled)) `
-            -or ($focusOptionBytes.ShowTimerInTheClockApp[1] -ne $middleByte)
-           ) {
-            $finalfocusOptionBytes += $selectedFocusOptions[$cursor..($cursor + 2)]
-            $numCheckedFocusOptions += 0x03
-        }
-    }
-
-    $numCheckedFocusOptions = [byte]$numCheckedFocusOptions
-    Write-Host "numCheckedFocusOptions: $numCheckedFocusOptions"
-    Write-Host $numCheckedFocusOptions.GetType()
-    Write-Host "finalfocusOptionBytes: $finalfocusOptionBytes"
-    #>
-
     $newFocusOptionBytes = [byte[]](buildFocusOptionBytes -TargetFocusOptionBytes $TargetFocusOptionBytes -Enabled $Enabled)
     $numCheckedFocusOptions = 0x08 + ($newFocusOptionBytes.Length) # None = 0x08, One = 0x0b, Two = 0x0e, Three = 0x11, All = 0x14
 
-    $finalValue = $firstConstant8Bytes            # 8-bytes that never change
-    $finalValue += getTimeStampBytes              # Time stamp bytes
+    # Well-known constant values from inspecting behavior of Windows Settings via ProcMon
+    $firstConstant8Bytes = (0x43, 0x42, 0x01, 0x00, 0x0a, 0x00, 0x2a, 0x06)
+    $secondsConstant5Bytes = (0xa9, 0x06, 0x2a, 0x2b, 0x0e)
+    $thirdConstan7Bytes = (0x43, 0x42, 0x01, 0x00, 0xc2, 0x0a, 0x01)
+    $finalConstant4Bytes = (0x00, 0x00, 0x00, 0x00)
+    
+    $finalValue = $firstConstant8Bytes     # 8-bytes that never change
+    $finalValue += getTimeStampBytes       # Time stamp bytes
     $finalValue += $secondsConstant5Bytes  # 5-bytes that never change
     $finalValue += $numCheckedFocusOptions # How many Focus options are checked
     $finalValue += $thirdConstan7Bytes     # 7-bytes that never change
     $finalValue += $newFocusOptionBytes    # 3-bytes per option checked, always starting with `c2`
     $finalValue += $finalConstant4Bytes    # Last 4-bytes are always constant
     $finalValue = [byte[]]$finalValue
-
-    # write-Friendly $finalValue
-    # Write-Host $finalValue.GetType()
-
+    
     Set-ItemProperty -Path $focusRegistryKey -Name "Data" -Value $finalValue
 }
 
@@ -216,3 +163,19 @@ function getTimeStampBytes {
     $timeStampBits += (($epochTime -shr 14) -band 0x7F -bor 0x80)
     return $timeStampBits
 }
+
+<#
+function Set-SessionDuration {
+    param(
+        [Parameter(Mandatory=$true)]
+        [ValidateScript(
+            { $_ -in 5..240 -and $_ % 5 -eq 0 },
+            ErrorMessage = 'Value {0} is not between 5 and 240, nor a multiple of 5.'
+        )]
+        [int]
+        $Duration
+    )
+    
+    Write-Host "Duration passed-in was: $Duration"
+}
+#>
