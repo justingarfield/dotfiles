@@ -1,0 +1,2 @@
+Set-Variable CONST_POWERCFG_ALIASES_SUB_BUTTONS -Option Constant -Value "4f971e89-eebd-4455-a8de-9e59040e7347"
+Set-Variable CONST_POWERCFG_ALIASES_UIBUTTON_ACTION -Option Constant -Value "a7066653-8d6c-40a8-910e-a1f54b84c7e5"

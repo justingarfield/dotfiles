@@ -11,3 +11,18 @@ Set-TurnOffScreenAfter -PowerOptionDurationType FiveMinutes
 
 ## Power mode
 # Set-PowerMode -Enabled $true
+
+
+### These are Control Panel side settings
+
+Set-PowerButtonSetting -PowerSource PluggedIn -PowerOption DoNothing
+
+Set-SleepButtonSetting -PowerSource PluggedIn -PowerOption DoNothing
+
+Set-FastStartup
+
+Set-ShowSleepInPowerMenu
+
+Set-ShowHibernateInPowerMenu
+
+Set-ShowShutdownOptionsOnLockScreen

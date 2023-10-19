@@ -1,0 +1,4 @@
+enum PowerSourceTypes {
+    PluggedIn
+    OnBattery
+}

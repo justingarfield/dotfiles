@@ -24,6 +24,8 @@ On my laptops, I choose to set the Power Button to `Shut down` and the Sleep But
 
 On laptops, I also set When I close the lid to be `Do nothing` as I'm usually just carrying the laptop from one room/seat to another.
 
+**Interesting Note:** When you update these settings via Control Panel, it's actually updating EVERY Power Scheme in the background. You can, however, use `powercfg.exe` to target a specific Power Scheme individually _(isn't Agile just wonderful? LOL!...wtf)_.
+
 #### Shutdown settings
 
 To adjust the settings under this section, you'll need to click on `Change settings that are currenty unavailable` at the top of the Control Panel screen.

@@ -25,6 +25,8 @@ Contains scripts that follow along with the current state of the Windows 11 Sett
 * [PowerShell Byte Array And Hex Functions](https://www.sans.org/blog/powershell-byte-array-and-hex-functions/)
 * [Bitwise operation](https://en.wikipedia.org/wiki/Bitwise_operation)
 * [Windows - Security identifiers](https://learn.microsoft.com/en-US/windows-server/identity/ad-ds/manage/understand-security-identifiers)
+* [Control advanced power settings with PowerCfg & PowerShell](https://powers-hell.com/2018/12/10/control-advanced-power-settings-with-powercfg-powershell/)
+* [How do I capture the output into a variable from an external process in PowerShell?](https://stackoverflow.com/questions/8097354/how-do-i-capture-the-output-into-a-variable-from-an-external-process-in-powershe/35980675)
 
 ### Tools and Utilities
 
