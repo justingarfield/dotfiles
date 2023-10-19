@@ -24,6 +24,7 @@ Contains scripts that follow along with the current state of the Windows 11 Sett
 * [Powershell integer parameter validation with multiple ranges](https://stackoverflow.com/a/73663376)
 * [PowerShell Byte Array And Hex Functions](https://www.sans.org/blog/powershell-byte-array-and-hex-functions/)
 * [Bitwise operation](https://en.wikipedia.org/wiki/Bitwise_operation)
+* [Windows - Security identifiers](https://learn.microsoft.com/en-US/windows-server/identity/ad-ds/manage/understand-security-identifiers)
 
 ### Tools and Utilities
 
