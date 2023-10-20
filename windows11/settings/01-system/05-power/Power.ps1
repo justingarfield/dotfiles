@@ -672,7 +672,7 @@ function Set-VideoPlaybackQualityBias {
     )
 
     $powerCfgSubGuid = $powerCfgAliases.SUB_MULTIMEDIA
-    $powerCfgSettingGuid = $powerCfgAliases.SUB_VIDEOSUB_MULTIMEDIA_PLAYBACKQUALBIAS_VIDEOIDLE
+    $powerCfgSettingGuid = $powerCfgAliases.SUB_MULTIMEDIA_PLAYBACKQUALBIAS
     $powerCfgSettingIndex = [int]([VideoPlaybackQualityBiasTypes]::$VideoPlaybackQualityBias)
 
     Set-AcDcValue `
