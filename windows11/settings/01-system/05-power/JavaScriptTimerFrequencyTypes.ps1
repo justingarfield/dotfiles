@@ -1,0 +1,4 @@
+enum JavaScriptTimerFrequencyTypes {
+    MaximumPowerSavings
+    MaximumPerformance
+}

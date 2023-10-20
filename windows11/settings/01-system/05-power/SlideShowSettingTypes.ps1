@@ -1,0 +1,4 @@
+enum SlideShowSettingTypes {
+    Available
+    Paused
+}
