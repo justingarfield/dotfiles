@@ -13,7 +13,7 @@ if ($autoProvisionedScheme) {
     Write-Host "Found existing Power Scheme named '$autoProvisionedSchemeName'."
 } else {
     Write-Host "Could not find Auto-Provisioned Power Scheme named '$autoProvisionedSchemeName'. Duplicating..."
-    $autoProvisionedScheme = DuplicatePowerScheme -NameOrGuid $powerSchemeToDuplicateName
+    $autoProvisionedScheme = Copy-PowerScheme -NameOrGuid $powerSchemeToDuplicateName
     Set-PowerSchemeNameAndDescription -NameOrGuid $autoProvisionedScheme.Guid -Name $autoProvisionedSchemeName -Description $autoProvisionedSchemeDescription
 }
 #>

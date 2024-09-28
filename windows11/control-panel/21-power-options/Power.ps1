@@ -51,7 +51,7 @@ function Get-ActivePowerScheme {
     }
 }
 
-function DuplicatePowerScheme {
+function Copy-PowerScheme {
     param(
         [Parameter(Mandatory=$true)]
         [ValidatePowerSchemeExists()]
